@@ -1,0 +1,10 @@
+"use client";
+
+import { useRef, useState } from "react";
+
+export function FileDropzone({ onFiles, accept, formats = ["JPG", "PNG", "PDF"], multiple = true }: { onFiles: (files: File[]) => void; accept?: string; formats?: string[]; multiple?: boolean }) {
+  const input = useRef<HTMLInputElement>(null);
+  const [dragging, setDragging] = useState(false);
+  const add = (files: FileList | null) => { if (files?.length) onFiles(Array.from(files)); };
+  return <div onDragEnter={(event) => { event.preventDefault(); setDragging(true); }} onDragOver={(event) => event.preventDefault()} onDragLeave={(event) => { event.preventDefault(); setDragging(false); }} onDrop={(event) => { event.preventDefault(); setDragging(false); add(event.dataTransfer.files); }} className={`rounded-2xl border-2 border-dashed p-6 text-center transition sm:p-9 ${dragging ? "border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/10" : "border-blue-300 bg-slate-50 hover:border-blue-500"}`}><input ref={input} onChange={(event) => add(event.target.files)} className="hidden" type="file" accept={accept} multiple={multiple}/><div className={`mx-auto grid h-12 w-12 place-items-center rounded-2xl text-2xl ${dragging ? "animate-bounce bg-orange-100 text-orange-600" : "animate-float bg-blue-50 text-blue-700"}`}>☁</div><h3 className="mt-4 font-display text-lg font-bold text-slate-900">Drop files here, or browse</h3><p className="mt-2 text-sm text-slate-500">Process up to 20 files at once. Nothing is uploaded to a server.</p><button onClick={() => input.current?.click()} type="button" className="focus-ring mt-5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-orange-500/25 transition hover:from-orange-600 hover:to-orange-700">Choose files</button><div className="mt-5 flex flex-wrap justify-center gap-2">{formats.map((format) => <span key={format} className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-metrics text-[10px] font-bold text-slate-500">{format}</span>)}</div></div>;
+}

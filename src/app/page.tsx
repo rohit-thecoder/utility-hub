@@ -1,69 +1,7 @@
-import Image from "next/image";
+import { HomeExplorer } from "@/components/home/HomeExplorer";
+import { AdSlot } from "@/components/ads/AdSlot";
+import { siteConfig } from "@/config/site";
 
 export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+  return <><section className="mx-auto max-w-7xl px-4 pb-8 pt-14 sm:px-6 sm:pt-20 lg:px-8"><div className="mx-auto max-w-4xl text-center"><p className="animate-pulse-soft inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/80 px-4 py-2 text-xs font-extrabold tracking-wide text-blue-800 shadow-sm"><span className="h-2 w-2 rounded-full bg-orange-500"/>100% Free <span className="text-slate-300">•</span> Zero Sign-Up <span className="text-slate-300">•</span> Browser-Local Privacy</p><h1 className="font-display mt-6 text-4xl font-extrabold tracking-[-.05em] text-slate-950 sm:text-6xl lg:text-7xl">Every useful tool.<br/><span className="bg-gradient-to-r from-blue-700 via-blue-600 to-orange-500 bg-clip-text text-transparent">One quiet, private place.</span></h1><p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">Convert files, solve everyday calculations, polish content, and ship cleaner work—without accounts, paywalls, or server uploads.</p></div><HomeExplorer /></section><div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"><AdSlot placement="Leaderboard" /><section className="my-14 rounded-3xl border border-blue-100 bg-gradient-to-r from-blue-700 to-blue-900 px-6 py-10 text-center text-white sm:px-10"><p className="font-metrics text-xs font-bold uppercase tracking-[.16em] text-blue-200">Built for focus, not friction</p><h2 className="font-display mt-3 text-3xl font-extrabold tracking-[-.04em]">Your files stay on your device.</h2><p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-blue-100">{siteConfig.name} uses browser capabilities wherever possible, so useful work can stay yours.</p></section></div></>;
 }

@@ -1,0 +1,4 @@
+import type { Metadata } from "next";
+import { LegalPage } from "@/components/legal/LegalPage";
+export const metadata: Metadata = { title: "About XYZ Tools", description: "Learn why XYZ Tools makes private browser utilities easy to use." };
+export default function AboutPage() { return <LegalPage title="About XYZ Tools" intro="XYZ Tools is a practical collection of browser-first utilities for common file, writing, code, and calculation tasks." sections={[{ heading: "Our approach", body: "We believe a small task should not require an account, a trial, or a complicated workflow. The site is built around focused tools with clear inputs and useful output." }, { heading: "Privacy by design", body: "Where browser APIs allow it, processing happens locally on your device. We communicate the processing model clearly for every workflow." }]}/>; }

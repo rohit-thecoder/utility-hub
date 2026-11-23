@@ -1,0 +1,4 @@
+import type { Metadata } from "next";
+import { LegalPage } from "@/components/legal/LegalPage";
+export const metadata: Metadata = { title: "Terms of Use", description: "Terms for using XYZ Tools." };
+export default function TermsPage() { return <LegalPage title="Terms of Use" intro="By using XYZ Tools, you agree to use the site lawfully and responsibly." sections={[{ heading: "Free service", body: "Tools are provided without a login and may change as we improve the platform. We do not guarantee uninterrupted availability or suitability for a particular purpose." }, { heading: "Your responsibility", body: "Review results before relying on them for legal, financial, medical, security, or business-critical decisions. You are responsible for the content you process and download." }, { heading: "Acceptable use", body: "Do not use the site to violate law, infringe rights, interfere with the service, or attempt to access systems or data without authorization." }]}/>; }

@@ -1,0 +1,4 @@
+import type { MetadataRoute } from "next";
+import { allTools, categories } from "@/data/toolsRegistry";
+import { siteConfig } from "@/config/site";
+export default function sitemap(): MetadataRoute.Sitemap { const now = new Date(); return [{ url: siteConfig.url, lastModified: now, changeFrequency: "weekly", priority: 1 }, { url: `${siteConfig.url}/all-tools`, lastModified: now, changeFrequency: "weekly", priority: .9 }, ...allTools.map((tool) => ({ url: `${siteConfig.url}/tools/${tool.slug}`, lastModified: now, changeFrequency: "monthly" as const, priority: .9 })), ...categories.map((category) => ({ url: `${siteConfig.url}/category/${category.slug}`, lastModified: now, changeFrequency: "weekly" as const, priority: .8 })), ...["about", "contact", "privacy-policy", "terms", "disclaimer"].map((page) => ({ url: `${siteConfig.url}/${page}`, lastModified: now, changeFrequency: "yearly" as const, priority: .4 }))]; }
