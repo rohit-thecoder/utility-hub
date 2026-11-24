@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { allTools, categories } from "@/data/toolsRegistry";
 
 function Logo() {
-  return <Link href="/" className="focus-ring flex shrink-0 items-center rounded-xl" aria-label="QuiikTool home"><Image src="/logo.png" width={168} height={42} priority className="h-9 w-auto sm:h-[42px]" alt="QuiikTool — Free All-in-One Online Utility Hub" /></Link>;
+  return <Link href="/" className="focus-ring flex shrink-0 items-center rounded-xl" aria-label="QuiikTool home"><Image src="/logo.png" width={42} height={42} priority className="h-10 w-10 rounded-xl object-contain" alt="QuiikTool — Free All-in-One Online Utility Hub" /></Link>;
 }
 
 export function Navbar() {
