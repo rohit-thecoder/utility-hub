@@ -7,7 +7,7 @@ import { ToolCard } from "@/components/tools/ToolCard";
 
 export function HomeExplorer() {
   const [query, setQuery] = useState(""); const [selected, setSelected] = useState("all"); const [recent, setRecent] = useState<string[]>([]);
-  useEffect(() => setRecent(JSON.parse(localStorage.getItem("xyz-recent-tools") || "[]")), []);
+  useEffect(() => { const frame = window.requestAnimationFrame(() => setRecent(JSON.parse(localStorage.getItem("xyz-recent-tools") || "[]"))); return () => window.cancelAnimationFrame(frame); }, []);
   const visible = useMemo(() => allTools.filter((tool) => (selected === "all" || tool.categorySlug === selected) && `${tool.name} ${tool.categoryName} ${tool.description}`.toLowerCase().includes(query.toLowerCase())), [query, selected]);
   const popular = popularTools.map((slug) => allTools.find((tool) => tool.slug === slug)).filter(Boolean);
   const recentTools = recent.map((slug) => allTools.find((tool) => tool.slug === slug)).filter(Boolean);

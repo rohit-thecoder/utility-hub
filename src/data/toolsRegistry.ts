@@ -27,7 +27,7 @@ const categories: Category[] = [
   { slug: "unit-converters", name: "Unit & Measurement Converters", description: "Convert units with reliable instant results.", icon: "↔", tools: ["length-area-converter|Length & Area Converter", "weight-mass-converter|Weight & Mass Converter", "digital-storage-converter|Digital Storage Converter", "speed-temperature-converter|Speed & Temperature Converter", "number-base-converter|Number Base Converter"] },
   { slug: "time-productivity", name: "Time & Productivity Tools", description: "Plan, focus, and translate time effortlessly.", icon: "◷", tools: ["timezone-converter|Timezone Converter", "pomodoro-focus-timer|Pomodoro Focus Timer", "unix-timestamp-converter|Unix Timestamp Converter"] },
   { slug: "data-spreadsheet-tools", name: "Data & Spreadsheet Utilities", description: "Move data between useful formats.", icon: "▦", tools: ["csv-excel-converter|CSV Excel Converter", "csv-viewer-cleaner|CSV Viewer & Cleaner", "sql-formatter|SQL Formatter", "markdown-table-generator|Markdown Table Generator", "mock-json-generator|Mock JSON Generator"] },
-  { slug: "creator-tools", name: "Social Media & Creator Tools", description: "Small utilities for better creator workflows.", icon: "✺", tools: ["youtube-thumbnail-downloader|YouTube Thumbnail Downloader", "youtube-title-tag-checker|YouTube Title & Tag Checker", "aspect-ratio-calculator|Aspect Ratio Calculator"] },
+  { slug: "creator-tools", name: "Social Media & Creator Tools", description: "AdSense-safe public metadata and planning utilities for YouTube creators.", icon: "✺", tools: ["youtube-thumbnail-downloader|YouTube Thumbnail Downloader", "youtube-title-description-extractor|YouTube Title & Description Extractor", "youtube-tag-extractor|YouTube Tag Extractor", "youtube-hashtag-generator|YouTube Hashtag Generator", "youtube-title-ctr-previewer|YouTube Title CTR Previewer", "youtube-embed-code-generator|YouTube Embed Code Generator", "youtube-timestamp-chapter-generator|YouTube Timestamp Chapter Generator", "youtube-money-rpm-calculator|YouTube Money RPM Calculator", "youtube-transcript-generator|YouTube Transcript Generator", "aspect-ratio-calculator|Aspect Ratio Calculator"] },
   { slug: "document-helpers", name: "Document & Resume Helpers", description: "Create polished business and personal documents.", icon: "▱", tools: ["online-signature-pad|Online Signature Pad", "gst-invoice-generator|GST Invoice Generator", "privacy-policy-generator|Privacy Policy Generator"] },
   { slug: "network-diagnostics", name: "Network & Browser Diagnostics", description: "Understand the browser and connection in use.", icon: "⌁", tools: ["what-is-my-ip|What Is My IP", "internet-speed-latency-test|Internet Speed & Latency Test"] },
   { slug: "ocr-tools", name: "OCR & Text Extraction", description: "Extract usable text from local images and PDFs.", icon: "▤", tools: ["image-to-text-ocr|Image to Text OCR", "scanned-pdf-to-text|Scanned PDF to Text"] },
@@ -54,10 +54,12 @@ const modeFor = (categorySlug: string, slug: string): ToolMode => {
 export const allTools: Tool[] = categories.flatMap((category) => category.tools.map((record) => {
   const [slug, name] = record.split("|");
   const primaryKeyword = `${name.toLowerCase()} online free`;
+  const seoTitle = `${name} Online Free — XYZ Tools`.slice(0, 59);
+  const metaDescription = `Use our free ${name.toLowerCase()} online with no sign-up, no watermark, and 100% browser-local privacy. Start instantly for a fast, secure result today.`.slice(0, 160);
   return {
     slug, name, categorySlug: category.slug, categoryName: category.name, description: `${category.description} Use ${name} instantly with no signup and browser-local processing.`, icon: category.icon, mode: modeFor(category.slug, slug),
-    seoTitle: `${name} Online Free — Fast & Private`,
-    metaDescription: `Use our free ${name.toLowerCase()} online. No sign-up, no watermark, and 100% private browser-local processing. Try ${name} now.`,
+    seoTitle,
+    metaDescription,
     primaryKeyword,
     secondaryKeywords: [`free ${name.toLowerCase()}`, `${name.toLowerCase()} without signup`, `private ${name.toLowerCase()}`, `fast ${name.toLowerCase()}`, `online ${name.toLowerCase()} tool`, `best ${name.toLowerCase()} online`],
     canonical: `${siteConfig.url}/tools/${slug}`,
