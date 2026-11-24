@@ -25,6 +25,9 @@ export const metadata: Metadata = {
   },
   openGraph: { type: "website", siteName: "QuiikTool", url: siteConfig.url, locale: "en_US" },
   twitter: { card: "summary_large_image", creator: "@quiiktool" },
+  other: {
+  "google-adsense-account": "ca-pub-6575366284458197",
+},
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
