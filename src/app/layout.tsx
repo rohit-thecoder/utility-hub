@@ -12,11 +12,11 @@ const mono = JetBrains_Mono({ variable: "--font-mono", subsets: ["latin"], displ
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
-  title: { default: `${siteConfig.name} — Free Online Utilities`, template: `%s | ${siteConfig.name}` },
-  description: "Fast, private, browser-local utilities for images, PDFs, text, code, calculations, and more.",
+  title: { default: "QuiikTool — Free All-in-One Online Image, PDF, Creator & Dev Utilities", template: "%s | QuiikTool" },
+  description: siteConfig.description,
   robots: { index: siteConfig.allowIndexing, follow: siteConfig.allowIndexing },
-  openGraph: { type: "website", siteName: siteConfig.name, url: siteConfig.url },
-  twitter: { card: "summary_large_image" },
+  openGraph: { type: "website", siteName: "QuiikTool", url: siteConfig.url, locale: "en_US" },
+  twitter: { card: "summary_large_image", creator: "@quiiktool" },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

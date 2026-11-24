@@ -7,7 +7,7 @@ type Platform = "instagram" | "facebook";
 type CaptionData = { platform: Platform; caption: string; hashtags: string[]; mentions: string[]; author: string; characterCount: number; wordCount: number };
 
 const sampleFor = (platform: Platform): CaptionData => {
-  const caption = platform === "instagram" ? "A little more sunlight, a little more exploring. Save this weekend idea for later! #weekendideas #travelinspo @xyztools" : "Three simple ways to make your next post easier to find. Which one will you try? #socialmediatips #contentcreator @xyztools";
+  const caption = platform === "instagram" ? "A little more sunlight, a little more exploring. Save this weekend idea for later! #weekendideas #travelinspo @quiiktool" : "Three simple ways to make your next post easier to find. Which one will you try? #socialmediatips #contentcreator @quiiktool";
   return { platform, caption, hashtags: [...caption.matchAll(/#[\p{L}\p{N}_]+/gu)].map((match) => match[0]), mentions: [...caption.matchAll(/@[A-Za-z0-9._-]+/g)].map((match) => match[0]), author: "Sample public creator", characterCount: caption.length, wordCount: caption.match(/[^\s]+/g)?.length || 0 };
 };
 

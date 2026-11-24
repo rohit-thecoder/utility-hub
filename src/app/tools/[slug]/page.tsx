@@ -19,7 +19,7 @@ import { siteConfig } from "@/config/site";
 type Props = { params: Promise<{ slug: string }> };
 export const dynamicParams = false;
 export function generateStaticParams() { return allTools.map((tool) => ({ slug: tool.slug })); }
-export async function generateMetadata({ params }: Props): Promise<Metadata> { const tool = getTool((await params).slug); if (!tool) return {}; return { title: tool.seoTitle, description: tool.metaDescription, keywords: [tool.primaryKeyword, ...tool.secondaryKeywords], alternates: { canonical: tool.canonical }, openGraph: { title: tool.seoTitle, description: tool.metaDescription, url: tool.canonical, type: "website" }, twitter: { card: "summary_large_image", title: tool.seoTitle, description: tool.metaDescription } }; }
+export async function generateMetadata({ params }: Props): Promise<Metadata> { const tool = getTool((await params).slug); if (!tool) return {}; return { title: tool.seoTitle, description: tool.metaDescription, keywords: [tool.primaryKeyword, ...tool.secondaryKeywords], alternates: { canonical: tool.canonical }, openGraph: { title: tool.seoTitle, description: tool.metaDescription, url: tool.canonical, type: "website", siteName: "QuiikTool", locale: "en_US" }, twitter: { card: "summary_large_image", title: tool.seoTitle, description: tool.metaDescription, creator: "@quiiktool" } }; }
 
 const dailyUtilitySlugs = new Set(["online-notepad-scratchpad", "daily-todo-checklist-maker", "spin-the-wheel-random-picker", "online-tally-counter", "typing-speed-test-wpm", "number-to-words-converter", "fuel-cost-mileage-calculator", "electricity-bill-calculator", "sleep-cycle-water-calculator", "shopping-discount-calculator", "online-meme-generator", "morse-code-binary-translator", "roman-numeral-converter", "ascii-text-banner-generator", "daily-habit-streak-tracker"]);
 
@@ -27,7 +27,7 @@ export default async function ToolPage({ params }: Props) {
   const tool = getTool((await params).slug); if (!tool) notFound();
   const related = relatedTools(tool);
   const schema = [
-    { "@context": "https://schema.org", "@type": "SoftwareApplication", name: tool.name, applicationCategory: tool.categoryName, operatingSystem: "Any", description: tool.metaDescription, url: tool.canonical, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } },
+    { "@context": "https://schema.org", "@type": "SoftwareApplication", name: tool.name, applicationCategory: "UtilitiesApplication", operatingSystem: "Any", description: tool.metaDescription, url: tool.canonical, publisher: { "@type": "Organization", name: "QuiikTool", url: siteConfig.url }, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } },
     { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: tool.faqs.map((faq) => ({ "@type": "Question", name: faq.question, acceptedAnswer: { "@type": "Answer", text: faq.answer } })) },
     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url }, { "@type": "ListItem", position: 2, name: tool.categoryName, item: `${siteConfig.url}/category/${tool.categorySlug}` }, { "@type": "ListItem", position: 3, name: tool.name, item: tool.canonical }] },
   ];

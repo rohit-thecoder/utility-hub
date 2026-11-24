@@ -74,7 +74,7 @@ const seoOverrides: Record<string, Partial<Tool>> = {
 export const allTools: Tool[] = categories.flatMap((category) => category.tools.map((record) => {
   const [slug, name] = record.split("|");
   const primaryKeyword = `${name.toLowerCase()} online free`;
-  const seoTitle = `${name} Online Free — XYZ Tools`.slice(0, 59);
+  const seoTitle = `${name} Online Free — QuiikTool`.slice(0, 59);
   const metaDescription = `Use our free ${name.toLowerCase()} online with no sign-up, no watermark, and 100% browser-local privacy. Start instantly for a fast, secure result today.`.slice(0, 160);
   return {
     slug, name, categorySlug: category.slug, categoryName: category.name, description: `${category.description} Use ${name} instantly with no signup and browser-local processing.`, icon: category.icon, mode: modeFor(category.slug, slug),

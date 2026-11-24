@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
   const id = extractYouTubeId(source);
   if (!id) return NextResponse.json({ error: "Paste a valid public YouTube URL." }, { status: 400 });
   const watchUrl = `https://www.youtube.com/watch?v=${id}`;
-  const headers = { "user-agent": "Mozilla/5.0 (compatible; XYZTools/1.0; +https://xyz.com)", "accept-language": "en-US,en;q=0.9" };
+  const headers = { "user-agent": "Mozilla/5.0 (compatible; QuiikTool/1.0; +https://quiiktool.com)", "accept-language": "en-US,en;q=0.9" };
   try {
     const watch = await fetch(watchUrl, { headers, next: { revalidate: 3600 } });
     const html = watch.ok ? await watch.text() : "";
