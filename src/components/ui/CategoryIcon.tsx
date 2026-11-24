@@ -1,7 +1,7 @@
 "use client";
 
 import type { LucideIcon } from "lucide-react";
-import { AtSign, AudioLines, BadgeIndianRupee, Braces, Calculator, ChartNoAxesCombined, Clapperboard, Code2, Cpu, FileText, Image, Landmark, Monitor, Palette, ScanText, ShieldCheck, ShoppingBag, SlidersHorizontal, Sparkles, Table2, Timer, Video, Wand2, Wifi } from "lucide-react";
+import { AtSign, AudioLines, BadgeIndianRupee, Braces, Calculator, CalendarCheck2, ChartNoAxesCombined, Clapperboard, Code2, Cpu, FileText, Image, Landmark, Monitor, Palette, ScanText, ShieldCheck, ShoppingBag, SlidersHorizontal, Sparkles, Table2, Timer, Video, Wand2, Wifi } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
   "image-converters": Image, "image-editing": Wand2, "pdf-tools": FileText, "pdf-converters": FileText, "pdf-security": ShieldCheck,
@@ -11,7 +11,7 @@ const iconMap: Record<string, LucideIcon> = {
   "document-helpers": FileText, "network-diagnostics": Wifi, "ocr-tools": ScanText, "ai-prompt-tools": Sparkles, "ecommerce-tools": ShoppingBag,
   "exam-form-tools": FileText, "hardware-testers": Monitor, "svg-vector-tools": Braces, "accounting-split-tools": Landmark,
   "privacy-metadata-tools": ShieldCheck, "instagram-tools": AtSign, "facebook-tools": ChartNoAxesCombined, "social-media-suite": Sparkles,
-  "creator-tools": Clapperboard,
+  "creator-tools": Clapperboard, "daily-utilities": CalendarCheck2,
 };
 
 export function CategoryIcon({ categorySlug, className = "" }: { categorySlug: string; className?: string }) {
