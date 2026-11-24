@@ -28,6 +28,9 @@ const categories: Category[] = [
   { slug: "time-productivity", name: "Time & Productivity Tools", description: "Plan, focus, and translate time effortlessly.", icon: "◷", tools: ["timezone-converter|Timezone Converter", "pomodoro-focus-timer|Pomodoro Focus Timer", "unix-timestamp-converter|Unix Timestamp Converter"] },
   { slug: "data-spreadsheet-tools", name: "Data & Spreadsheet Utilities", description: "Move data between useful formats.", icon: "▦", tools: ["csv-excel-converter|CSV Excel Converter", "csv-viewer-cleaner|CSV Viewer & Cleaner", "sql-formatter|SQL Formatter", "markdown-table-generator|Markdown Table Generator", "mock-json-generator|Mock JSON Generator"] },
   { slug: "creator-tools", name: "Social Media & Creator Tools", description: "AdSense-safe public metadata and planning utilities for YouTube creators.", icon: "✺", tools: ["youtube-thumbnail-downloader|YouTube Thumbnail Downloader", "youtube-title-description-extractor|YouTube Title & Description Extractor", "youtube-tag-extractor|YouTube Tag Extractor", "youtube-hashtag-generator|YouTube Hashtag Generator", "youtube-title-ctr-previewer|YouTube Title CTR Previewer", "youtube-embed-code-generator|YouTube Embed Code Generator", "youtube-timestamp-chapter-generator|YouTube Timestamp Chapter Generator", "youtube-money-rpm-calculator|YouTube Money RPM Calculator", "youtube-transcript-generator|YouTube Transcript Generator", "aspect-ratio-calculator|Aspect Ratio Calculator"] },
+  { slug: "instagram-tools", name: "Instagram Tools", description: "Create, resize, preview, and plan Instagram content locally.", icon: "◎", tools: ["instagram-caption-generator|Instagram Caption Generator", "instagram-hashtag-generator|Instagram Hashtag Generator", "instagram-bio-font-generator|Instagram Bio Font Generator", "instagram-grid-splitter|Instagram Grid Splitter", "instagram-no-crop-blur-fit|Instagram No-Crop Blur Fit", "instagram-engagement-calculator|Instagram Engagement Calculator", "instagram-reels-safe-zone-checker|Instagram Reels Safe Zone Checker", "instagram-dp-border-maker|Instagram DP Border Maker", "instagram-reel-post-downloader|Instagram Reel & Post Downloader"] },
+  { slug: "facebook-tools", name: "Facebook Tools", description: "Prepare Facebook copy, previews, banners, and public media metadata.", icon: "f", tools: ["facebook-post-ad-copy-generator|Facebook Post & Ad Copy Generator", "facebook-ad-character-previewer|Facebook Ad Character Previewer", "facebook-og-link-previewer|Facebook OG Link Previewer", "facebook-cover-banner-resizer|Facebook Cover Banner Resizer", "facebook-page-name-generator|Facebook Page Name Generator", "facebook-reel-video-downloader|Facebook Reel & Video Downloader"] },
+  { slug: "social-media-suite", name: "Social Media Suite", description: "Cross-platform creator utilities for every publishing workflow.", icon: "✳", tools: ["social-media-image-resizer|Social Media Image Resizer", "social-media-post-mockup-generator|Social Media Post Mockup Generator", "google-trends-viral-hook-generator|Google Trends Viral Hook Generator", "social-character-limit-checker|Social Character Limit Checker", "whatsapp-direct-link-qr-generator|WhatsApp Direct Link QR Generator", "link-in-bio-page-generator|Link in Bio Page Generator"] },
   { slug: "document-helpers", name: "Document & Resume Helpers", description: "Create polished business and personal documents.", icon: "▱", tools: ["online-signature-pad|Online Signature Pad", "gst-invoice-generator|GST Invoice Generator", "privacy-policy-generator|Privacy Policy Generator"] },
   { slug: "network-diagnostics", name: "Network & Browser Diagnostics", description: "Understand the browser and connection in use.", icon: "⌁", tools: ["what-is-my-ip|What Is My IP", "internet-speed-latency-test|Internet Speed & Latency Test"] },
   { slug: "ocr-tools", name: "OCR & Text Extraction", description: "Extract usable text from local images and PDFs.", icon: "▤", tools: ["image-to-text-ocr|Image to Text OCR", "scanned-pdf-to-text|Scanned PDF to Text"] },
@@ -47,7 +50,7 @@ const modeFor = (categorySlug: string, slug: string): ToolMode => {
   if (["text-tools", "ai-prompt-tools"].includes(categorySlug)) return "text";
   if (["developer-tools", "seo-tools", "svg-vector-tools", "data-spreadsheet-tools"].includes(categorySlug)) return "code";
   if (["security-generators", "color-css-tools", "document-helpers"].includes(categorySlug)) return "generator";
-  if (["video-tools", "audio-tools", "hardware-testers", "ocr-tools", "creator-tools"].includes(categorySlug)) return "media";
+  if (["video-tools", "audio-tools", "hardware-testers", "ocr-tools", "creator-tools", "instagram-tools", "facebook-tools", "social-media-suite"].includes(categorySlug)) return "media";
   return "file";
 };
 
@@ -72,9 +75,13 @@ export const allTools: Tool[] = categories.flatMap((category) => category.tools.
   };
 }));
 
+const mediaDownloaderSlugs = new Set(["instagram-reel-post-downloader", "facebook-reel-video-downloader"]);
+export const isToolVisible = (tool: Tool) => siteConfig.enableMediaDownloaders || !mediaDownloaderSlugs.has(tool.slug);
+export const visibleTools = allTools.filter(isToolVisible);
+
 export { categories };
 export const popularTools = ["image-compressor", "jpg-to-png", "merge-pdf", "word-character-counter", "json-formatter-validator", "qr-code-generator", "emi-loan-calculator", "image-to-text-ocr", "password-generator", "exam-photo-signature-resizer"];
 export const getTool = (slug: string) => allTools.find((tool) => tool.slug === slug);
 export const getCategory = (slug: string) => categories.find((category) => category.slug === slug);
-export const toolsForCategory = (slug: string) => allTools.filter((tool) => tool.categorySlug === slug);
-export const relatedTools = (tool: Tool) => [...toolsForCategory(tool.categorySlug).filter((item) => item.slug !== tool.slug), ...allTools.filter((item) => item.categorySlug !== tool.categorySlug)].slice(0, 6);
+export const toolsForCategory = (slug: string) => allTools.filter((tool) => tool.categorySlug === slug && isToolVisible(tool));
+export const relatedTools = (tool: Tool) => [...toolsForCategory(tool.categorySlug).filter((item) => item.slug !== tool.slug), ...visibleTools.filter((item) => item.categorySlug !== tool.categorySlug)].slice(0, 6);

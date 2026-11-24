@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
-import { Navbar } from "@/components/layout/Navbar";
+import { PremiumNavbar } from "@/components/layout/PremiumNavbar";
 import { siteConfig } from "@/config/site";
+import { DownloadInterstitialProvider } from "@/components/ads/DownloadInterstitialProvider";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
 const jakarta = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin"], display: "swap" });
@@ -19,5 +20,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" className={`${inter.variable} ${jakarta.variable} ${mono.variable}`}><body className="min-h-screen overflow-x-hidden"><Navbar /><main className="min-h-[calc(100vh-13rem)]">{children}</main><Footer /></body></html>;
+  return <html lang="en" className={`${inter.variable} ${jakarta.variable} ${mono.variable}`}><body className="min-h-screen overflow-x-hidden"><DownloadInterstitialProvider><PremiumNavbar /><main className="min-h-[calc(100vh-13rem)]">{children}</main><Footer /></DownloadInterstitialProvider></body></html>;
 }
