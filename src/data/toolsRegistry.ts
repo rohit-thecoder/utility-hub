@@ -28,8 +28,8 @@ const categories: Category[] = [
   { slug: "time-productivity", name: "Time & Productivity Tools", description: "Plan, focus, and translate time effortlessly.", icon: "◷", tools: ["timezone-converter|Timezone Converter", "pomodoro-focus-timer|Pomodoro Focus Timer", "unix-timestamp-converter|Unix Timestamp Converter"] },
   { slug: "data-spreadsheet-tools", name: "Data & Spreadsheet Utilities", description: "Move data between useful formats.", icon: "▦", tools: ["csv-excel-converter|CSV Excel Converter", "csv-viewer-cleaner|CSV Viewer & Cleaner", "sql-formatter|SQL Formatter", "markdown-table-generator|Markdown Table Generator", "mock-json-generator|Mock JSON Generator"] },
   { slug: "creator-tools", name: "Social Media & Creator Tools", description: "AdSense-safe public metadata and planning utilities for YouTube creators.", icon: "✺", tools: ["youtube-thumbnail-downloader|YouTube Thumbnail Downloader", "youtube-title-description-extractor|YouTube Title & Description Extractor", "youtube-tag-extractor|YouTube Tag Extractor", "youtube-hashtag-generator|YouTube Hashtag Generator", "youtube-title-ctr-previewer|YouTube Title CTR Previewer", "youtube-embed-code-generator|YouTube Embed Code Generator", "youtube-timestamp-chapter-generator|YouTube Timestamp Chapter Generator", "youtube-money-rpm-calculator|YouTube Money RPM Calculator", "youtube-transcript-generator|YouTube Transcript Generator", "aspect-ratio-calculator|Aspect Ratio Calculator"] },
-  { slug: "instagram-tools", name: "Instagram Tools", description: "Create, resize, preview, and plan Instagram content locally.", icon: "◎", tools: ["instagram-caption-generator|Instagram Caption Generator", "instagram-hashtag-generator|Instagram Hashtag Generator", "instagram-bio-font-generator|Instagram Bio Font Generator", "instagram-grid-splitter|Instagram Grid Splitter", "instagram-no-crop-blur-fit|Instagram No-Crop Blur Fit", "instagram-engagement-calculator|Instagram Engagement Calculator", "instagram-reels-safe-zone-checker|Instagram Reels Safe Zone Checker", "instagram-dp-border-maker|Instagram DP Border Maker", "instagram-reel-post-downloader|Instagram Reel & Post Downloader"] },
-  { slug: "facebook-tools", name: "Facebook Tools", description: "Prepare Facebook copy, previews, banners, and public media metadata.", icon: "f", tools: ["facebook-post-ad-copy-generator|Facebook Post & Ad Copy Generator", "facebook-ad-character-previewer|Facebook Ad Character Previewer", "facebook-og-link-previewer|Facebook OG Link Previewer", "facebook-cover-banner-resizer|Facebook Cover Banner Resizer", "facebook-page-name-generator|Facebook Page Name Generator", "facebook-reel-video-downloader|Facebook Reel & Video Downloader"] },
+  { slug: "instagram-tools", name: "Instagram Tools", description: "Create, resize, preview, and plan Instagram content locally.", icon: "◎", tools: ["instagram-caption-generator|Instagram Caption Generator", "instagram-hashtag-generator|Instagram Hashtag Generator", "instagram-caption-extractor|Instagram Caption & Hashtag Extractor", "instagram-bio-font-generator|Instagram Bio Font Generator", "instagram-grid-splitter|Instagram Grid Splitter", "instagram-no-crop-blur-fit|Instagram No-Crop Blur Fit", "instagram-engagement-calculator|Instagram Engagement Calculator", "instagram-reels-safe-zone-checker|Instagram Reels Safe Zone Checker", "instagram-dp-border-maker|Instagram DP Border Maker", "instagram-reel-post-downloader|Instagram Reel & Post Downloader"] },
+  { slug: "facebook-tools", name: "Facebook Tools", description: "Prepare Facebook copy, previews, banners, and public media metadata.", icon: "f", tools: ["facebook-post-ad-copy-generator|Facebook Post & Ad Copy Generator", "facebook-ad-character-previewer|Facebook Ad Character Previewer", "facebook-caption-extractor|Facebook Post & Reel Caption Extractor", "facebook-og-link-previewer|Facebook OG Link Previewer", "facebook-cover-banner-resizer|Facebook Cover Banner Resizer", "facebook-page-name-generator|Facebook Page Name Generator", "facebook-reel-video-downloader|Facebook Reel & Video Downloader"] },
   { slug: "social-media-suite", name: "Social Media Suite", description: "Cross-platform creator utilities for every publishing workflow.", icon: "✳", tools: ["social-media-image-resizer|Social Media Image Resizer", "social-media-post-mockup-generator|Social Media Post Mockup Generator", "google-trends-viral-hook-generator|Google Trends Viral Hook Generator", "social-character-limit-checker|Social Character Limit Checker", "whatsapp-direct-link-qr-generator|WhatsApp Direct Link QR Generator", "link-in-bio-page-generator|Link in Bio Page Generator"] },
   { slug: "document-helpers", name: "Document & Resume Helpers", description: "Create polished business and personal documents.", icon: "▱", tools: ["online-signature-pad|Online Signature Pad", "gst-invoice-generator|GST Invoice Generator", "privacy-policy-generator|Privacy Policy Generator"] },
   { slug: "network-diagnostics", name: "Network & Browser Diagnostics", description: "Understand the browser and connection in use.", icon: "⌁", tools: ["what-is-my-ip|What Is My IP", "internet-speed-latency-test|Internet Speed & Latency Test"] },
@@ -54,6 +54,21 @@ const modeFor = (categorySlug: string, slug: string): ToolMode => {
   return "file";
 };
 
+const seoOverrides: Record<string, Partial<Tool>> = {
+  "instagram-caption-extractor": {
+    seoTitle: "Instagram Caption Extractor Online — Free & Private",
+    metaDescription: "Extract public Instagram captions, hashtags, mentions, and author details online. Copy clean text instantly with no login or data storage.",
+    primaryKeyword: "Instagram caption extractor",
+    secondaryKeywords: ["Instagram caption downloader", "extract Instagram hashtags", "copy Instagram caption", "Instagram reel caption extractor", "Instagram post text extractor", "public Instagram metadata tool"],
+  },
+  "facebook-caption-extractor": {
+    seoTitle: "Facebook Caption Extractor Online — Posts & Reels",
+    metaDescription: "Extract captions, hashtags, mentions, and author details from public Facebook posts and reels. Copy or download text privately with no login.",
+    primaryKeyword: "Facebook caption extractor",
+    secondaryKeywords: ["Facebook post caption extractor", "Facebook reel caption extractor", "copy Facebook caption", "extract Facebook hashtags", "Facebook post text tool", "public Facebook metadata extractor"],
+  },
+};
+
 export const allTools: Tool[] = categories.flatMap((category) => category.tools.map((record) => {
   const [slug, name] = record.split("|");
   const primaryKeyword = `${name.toLowerCase()} online free`;
@@ -73,7 +88,7 @@ export const allTools: Tool[] = categories.flatMap((category) => category.tools.
       { question: `Do I need to install software?`, answer: "No. Open the tool in a modern browser and start immediately." },
     ],
   };
-}));
+})).map((tool) => ({ ...tool, ...(seoOverrides[tool.slug] || {}) }));
 
 const mediaDownloaderSlugs = new Set(["instagram-reel-post-downloader", "facebook-reel-video-downloader"]);
 export const isToolVisible = (tool: Tool) => siteConfig.enableMediaDownloaders || !mediaDownloaderSlugs.has(tool.slug);
