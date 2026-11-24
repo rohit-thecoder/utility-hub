@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { allTools, categories } from "@/data/toolsRegistry";
-import { siteConfig } from "@/config/site";
 
 function Logo() {
-  return <Link href="/" className="focus-ring flex shrink-0 items-center gap-2 rounded-xl" aria-label={`${siteConfig.name} home`}><svg width="31" height="31" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M5 6.5 16 2l11 4.5v9L16 20 5 15.5v-9Z" fill="#1D4ED8"/><path d="m5 15.5 11 4.5 11-4.5V25L16 30 5 25v-9.5Z" fill="#F97316"/><path d="m16 2v18" stroke="white" strokeWidth="2" opacity=".8"/></svg><span className="font-display text-lg font-extrabold tracking-[-.04em] text-slate-900"><span className="text-blue-700">Quiik</span><span className="text-orange-500">Tool</span></span></Link>;
+  return <Link href="/" className="focus-ring flex shrink-0 items-center rounded-xl" aria-label="QuiikTool home"><Image src="/logo.png" width={168} height={42} priority className="h-9 w-auto sm:h-[42px]" alt="QuiikTool — Free All-in-One Online Utility Hub" /></Link>;
 }
 
 export function Navbar() {

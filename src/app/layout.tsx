@@ -15,6 +15,14 @@ export const metadata: Metadata = {
   title: { default: "QuiikTool — Free All-in-One Online Image, PDF, Creator & Dev Utilities", template: "%s | QuiikTool" },
   description: siteConfig.description,
   robots: { index: siteConfig.allowIndexing, follow: siteConfig.allowIndexing },
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/favicon.ico", type: "image/x-icon" },
+    ],
+    shortcut: ["/favicon.ico"],
+    apple: [{ url: "/icon.png", type: "image/png" }],
+  },
   openGraph: { type: "website", siteName: "QuiikTool", url: siteConfig.url, locale: "en_US" },
   twitter: { card: "summary_large_image", creator: "@quiiktool" },
 };
