@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "verify:tools": "tsx scripts/verify-tools.ts",
-    "test:youtube": "tsx --test scripts/youtube.test.ts"
+    "test:youtube": "tsx --test scripts/youtube.test.ts",
+    "test:restored": "tsx --test scripts/restored.test.ts"
   },
   "dependencies": {
     "browser-image-compression": "^2.0.2",

@@ -1,0 +1,10 @@
+import assert from "node:assert/strict";
+import { test } from "node:test";
+import { runTextUtility,textTools } from "../src/lib/textUtilities";
+import { imageTools } from "../src/lib/imageToolsConfig";
+import { fileTools } from "../src/lib/fileToolsConfig";
+import { deviceTools } from "../src/lib/deviceToolsConfig";
+import { networkTools } from "../src/lib/networkToolsConfig";
+test("93 distinct restored routes",()=>{const slugs=[...Object.keys(textTools),...Object.keys(imageTools),...Object.keys(fileTools),...Object.keys(deviceTools),...networkTools];assert.equal(slugs.length,93);assert.equal(new Set(slugs).size,93);});
+test("calculations and conversion",()=>{assert.match(runTextUtility("profit-margin-calculator",["100","75"]),/Margin: 25%/);assert.equal(runTextUtility("number-base-converter",["ff","16","10"]),"255");assert.equal(runTextUtility("speed-temperature-converter",["32","F","C"]),"0 °C");assert.match(runTextUtility("bill-splitter-calculator",["100","20","3"]),/Each: 40/);assert.match(runTextUtility("wcag-contrast-checker",["#000000","#ffffff"]),/21.00:1/);assert.throws(()=>runTextUtility("length-area-converter",["1","m","acre"]));});
+test("text operations",()=>{assert.match(runTextUtility("text-diff-checker",["old","new"]),/- old\n\+ new/);assert.match(runTextUtility("utm-link-builder",["https://example.com","mail","email","spring"]),/utm_campaign=spring/);assert.match(runTextUtility("luhn-test-card-validator",["4242424242424242"]),/Valid Luhn/);assert.match(runTextUtility("json-csv-yaml-converter",['[{"a":1}]',"JSON to CSV"]),/a\r?\n1/);});

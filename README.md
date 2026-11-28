@@ -24,3 +24,7 @@ Copy .env.example to .env.local for local configuration. Never commit keys.
 - Media downloaders and incomplete or misleading tools are excluded from the active catalog; their existing routes show maintenance notices and noindex. Re-enable individual tools only after implementing and testing them.
 - ads.txt and the existing AdSense verification meta tag remain intact. Manual ads require genuine numeric slot IDs; placeholders and download interstitials are disabled. Configure Google-certified consent management and review ad placement before enabling ads. Google determines approval; this code cannot guarantee approval.
 - Verify contact email delivery and review legal notices for actual service practices. Check the production URL and run real-video, invalid-link, quota-failure, mobile, download and calculator smoke tests.
+
+## Restored utility modules
+
+Text, image, file, browser-device and network utility workspaces now cover 93 additional routes. The active catalog excludes AI image enhancement, PDF rendering/OCR/encryption and Instagram/Facebook media downloaders until real dependencies or authorized integrations are available. Browser-specific media features must be tested on Chrome, Firefox, Safari and mobile. Some tools are explicitly estimates (token count, keyword coverage, network speed), lossless PDF rewriting, visual signing, or manual previews. No external scripts or new npm dependencies were added.

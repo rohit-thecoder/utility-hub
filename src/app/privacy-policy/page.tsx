@@ -12,7 +12,7 @@ export default function Page() { return <LegalPage title="Privacy Policy" intro=
   },
   {
     "heading": "Hosting and technical information",
-    "body": "Vercel and other infrastructure providers may process IP addresses, browser and device information, URLs, timestamps and request logs for delivery, security, debugging and service reliability. Our tools do not require registration. We do not intentionally create a permanent database of your tool inputs; infrastructure and third-party providers may retain logs under their own policies."
+    "body": "The IP and network test tools make a request to our own hosting service and may display the IP address reported by that service. YouTube thumbnail previews request images from YouTube. Vercel and other infrastructure providers may process IP addresses, browser and device information, URLs, timestamps and request logs for delivery, security, debugging and service reliability. Our tools do not require registration. We do not intentionally create a permanent database of your tool inputs; infrastructure and third-party providers may retain logs under their own policies."
   },
   {
     "heading": "Google advertising and cookies",
