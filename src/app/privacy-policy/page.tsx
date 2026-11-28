@@ -8,7 +8,7 @@ export default function Page() { return <LegalPage title="Privacy Policy" intro=
   },
   {
     "heading": "Online tools and third-party services",
-    "body": "YouTube metadata requests send the supplied video identifier to YouTube Data API Services through our server. Instagram and Facebook caption lookups may send the public post URL to a configured RapidAPI provider. If you choose hosted transcription, your selected media file is sent through our server to Groq for processing. These services may handle information under their own terms and privacy policies. Do not upload confidential or unauthorized material. Manual caption analysis is available without an online lookup."
+    "body": "YouTube metadata requests send the supplied video identifier to YouTube Data API Services through our server. Instagram and Facebook caption lookups may send the public post URL to a configured RapidAPI provider. If you choose hosted transcription, your selected media file is sent through our server to Groq for processing. These services may handle information under their own terms and privacy policies. Do not upload confidential or unauthorized material. Manual caption analysis is available without an online lookup. If enabled, authorized Meta media downloads send the user-supplied access token and media identifier through our server to Meta for a single request. The application does not retain the token, and does not proxy the returned media file. PDF rendering, encryption and AI upscaling process selected files on the device using self-hosted libraries; OCR may fetch language-model assets."
   },
   {
     "heading": "Hosting and technical information",

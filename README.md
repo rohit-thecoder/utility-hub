@@ -28,3 +28,9 @@ Copy .env.example to .env.local for local configuration. Never commit keys.
 ## Restored utility modules
 
 Text, image, file, browser-device and network utility workspaces now cover 93 additional routes. The active catalog excludes AI image enhancement, PDF rendering/OCR/encryption and Instagram/Facebook media downloaders until real dependencies or authorized integrations are available. Browser-specific media features must be tested on Chrome, Firefox, Safari and mobile. Some tools are explicitly estimates (token count, keyword coverage, network speed), lossless PDF rewriting, visual signing, or manual previews. No external scripts or new npm dependencies were added.
+
+## Advanced utilities
+
+AI Image Enhancer uses the trained UpscalerJS default 2× ESRGAN model; PDF to JPG and scanned PDF OCR use PDF.js and Tesseract.js; Protect PDF uses AES-256 via @pdfsmaller/pdf-encrypt. Browser assets are prepared from pinned upstream npm tarballs by `npm run prepare:advanced` (automatically before `npm run dev` and `npm run build`); an internet connection is needed for initial preparation, and npm and tar must be available. Generated assets are not committed, and no changes to the existing dependency lockfile are required. Review output and test encrypted documents in a separate PDF reader. OCR language files may be fetched by Tesseract.
+
+The two Meta downloader routes use the official Graph API and are gated by `NEXT_PUBLIC_ENABLE_DOWNLOADERS=true` (false by default). Visitors must supply their own authorized access token and media ID or supported URL. Do not configure a shared server-side Meta token. No arbitrary public post scraping or proxying. Instagram search by permalink is limited to the first 150 media items; media IDs can be entered directly. Facebook short share URLs are not resolved. Signed output links can expire. Test with actual authorized accounts before enabling indexing/advertising. The legacy social-fetch endpoint is retired.

@@ -9,7 +9,10 @@
     "lint": "eslint",
     "verify:tools": "tsx scripts/verify-tools.ts",
     "test:youtube": "tsx --test scripts/youtube.test.ts",
-    "test:restored": "tsx --test scripts/restored.test.ts"
+    "test:restored": "tsx --test scripts/restored.test.ts",
+    "prepare:advanced": "node scripts/prepare-advanced-vendors.mjs",
+    "predev": "npm run prepare:advanced",
+    "prebuild": "npm run prepare:advanced"
   },
   "dependencies": {
     "browser-image-compression": "^2.0.2",
