@@ -54,7 +54,16 @@ case "link-in-bio-page-generator":return "<!doctype html><html lang=\"en\"><meta
 case "privacy-policy-generator":return "PRIVACY POLICY DRAFT — "+a+"\n\nContact: "+b+"\n\nInformation collected\n"+c+"\n\nService providers and cookies\n"+d+"\n\nRetention and choices\n"+e+"\n\nReview against actual practices and applicable law before publishing.";
 case "hra-rent-receipt-generator":return "RENT RECEIPT\nTenant: "+a+"\nLandlord: "+b+"\nAddress: "+c+"\nRental period: "+d+"\nRent received: ₹"+fmt(pos(e))+"\nDate: __________\nLandlord signature: __________\nUse only for rent actually paid.";
 case "gst-invoice-generator":{const amount=pos(f)*nonneg(g),tax=amount*nonneg(h)/100;return "INVOICE "+d+"\nSeller: "+a+"\nGSTIN: "+b+"\nBuyer: "+c+"\nItem: "+e+"\nQuantity: "+f+"\nTaxable amount: ₹"+fmt(amount)+"\nGST: ₹"+fmt(tax)+"\nTotal: ₹"+fmt(amount+tax)+"\nReview required invoice details and applicable CGST/SGST/IGST before issuing.";}
-case "svg-to-jsx-converter":case "svg-optimizer":{const doc=new DOMParser().parseFromString(a,"image/svg+xml");if(doc.querySelector("parsererror")||doc.documentElement.localName!=="svg")throw Error("Enter valid SVG.");const stripped=a.replace(/<!--[\s\S]*?-->/g,"").trim();return slug==="svg-optimizer"?stripped.replace(/>\s+</g,"><"):stripped.replace(/\b(class|stroke-width|stroke-linecap|stroke-linejoin|fill-rule|clip-rule|fill-opacity|stroke-opacity|tabindex)=/g,(_,k:string)=>((k==="class"?"className":k==="tabindex"?"tabIndex":"")||k.replace(/-([a-z])/g,(_,c:string)=>c.toUpperCase()))+" \n";}
+case "svg-to-jsx-converter":case "svg-optimizer": {
+  const doc = new DOMParser().parseFromString(a, "image/svg+xml");
+  if (doc.querySelector("parsererror") || doc.documentElement.localName !== "svg") throw Error("Enter valid SVG.");
+  const stripped = a.replace(/<!--[\s\S]*?-->/g, "").trim();
+  if (slug === "svg-optimizer") return stripped.replace(/>\s+</g, "><");
+  return stripped.replace(/\b(class|stroke-width|stroke-linecap|stroke-linejoin|fill-rule|clip-rule|fill-opacity|stroke-opacity|tabindex)=/g, (_match, key: string) => {
+    const attribute = key === "class" ? "className" : key === "tabindex" ? "tabIndex" : key.replace(/-([a-z])/g, (_part, char: string) => char.toUpperCase());
+    return attribute + "=";
+  });
+}
 case "sql-formatter":return a.split(/('(?:''|[^'])*'|"(?:\"\"|[^"])*"|--[^\n]*|\/\*[\s\S]*?\*\/)/g).map((part,i)=>i%2?part:part.replace(/\b(select|from|where|left join|inner join|right join|group by|order by|having|limit|union)\b/gi,"\n$1")).join("").trim();
 case "code-minifier-beautifier":return b==="CSS whitespace cleanup"?a.trim().split(/\r?\n/).map(l=>l.trim()).join("\n"):JSON.stringify(JSON.parse(a),null,b==="JSON beautify"?2:0);
 case "json-csv-yaml-converter":{if(b==="CSV to JSON"){const parsed=Papa.parse(a,{header:true,skipEmptyLines:true});if(parsed.errors.length)throw Error(parsed.errors[0].message);return JSON.stringify(parsed.data,null,2);}const x=JSON.parse(a);if(b==="JSON to YAML")return "---\n"+JSON.stringify(x,null,2)+"\n";if(!Array.isArray(x)||!x.every(y=>y&&typeof y==="object"&&!Array.isArray(y)))throw Error("Enter an array of objects.");return Papa.unparse(x);}
