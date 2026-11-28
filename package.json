@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "verify:tools": "tsx scripts/verify-tools.ts"
+    "verify:tools": "tsx scripts/verify-tools.ts",
+    "test:youtube": "tsx --test scripts/youtube.test.ts"
   },
   "dependencies": {
     "browser-image-compression": "^2.0.2",
@@ -37,7 +38,6 @@
     "eslint-config-next": "16.4.6",
     "tailwindcss": "4.3.3",
     "tsx": "^4.23.15",
-    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

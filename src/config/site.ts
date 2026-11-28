@@ -4,7 +4,7 @@ export const siteConfig = {
   name: process.env.NEXT_PUBLIC_SITE_NAME || "QuiikTool",
   url: rawUrl.replace(/\/$/, ""),
   contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "contact@quiiktool.com",
-  description: "QuiikTool offers 150+ free, fast, privacy-first online image, PDF, developer, YouTube, Instagram, Facebook, and everyday productivity utilities directly in your browser.",
+  description: "QuiikTool offers free browser-first online image, PDF, developer, YouTube, Instagram, Facebook, and everyday productivity utilities with local processing where supported.",
   adsenseClientId: process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || "",
   allowIndexing: process.env.NEXT_PUBLIC_ALLOW_INDEXING === "true",
   enableMediaDownloaders: process.env.NEXT_PUBLIC_ENABLE_DOWNLOADERS === "true",

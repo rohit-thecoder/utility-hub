@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
-import { categories, popularTools, toolsForCategory, visibleTools } from "@/data/toolsRegistry";
+import { activeCategories as categories, popularTools, toolsForCategory, visibleTools } from "@/data/toolsRegistry";
 
 export function PremiumNavbar() {
   const [megaOpen, setMegaOpen] = useState(false);
@@ -75,7 +75,7 @@ export function PremiumNavbar() {
       </nav>
 
       <div className="ml-auto flex min-w-0 items-center gap-1">
-        <button onClick={openSearch} className="hidden min-w-56 items-center justify-between rounded-full border border-slate-200 bg-white px-4 py-2 text-left text-sm text-slate-500 shadow-sm hover:border-blue-300 md:flex" aria-label="Search tools"><span>Search 150+ tools...</span><kbd className="rounded border border-slate-200 px-1.5 py-0.5 text-[10px]">⌘ K</kbd></button>
+        <button onClick={openSearch} className="hidden min-w-56 items-center justify-between rounded-full border border-slate-200 bg-white px-4 py-2 text-left text-sm text-slate-500 shadow-sm hover:border-blue-300 md:flex" aria-label="Search tools"><span>Search tools...</span><kbd className="rounded border border-slate-200 px-1.5 py-0.5 text-[10px]">⌘ K</kbd></button>
         <button onClick={openSearch} className="rounded-lg p-2 text-xl text-slate-700 md:hidden" aria-label="Search tools">⌕</button>
         <button onClick={() => { setMegaOpen(false); setMobileOpen((value) => !value); }} className="rounded-lg p-2 text-xl text-slate-700 lg:hidden" aria-label={mobileOpen ? "Close menu" : "Open menu"} aria-expanded={mobileOpen}>{mobileOpen ? "×" : "☰"}</button>
       </div>

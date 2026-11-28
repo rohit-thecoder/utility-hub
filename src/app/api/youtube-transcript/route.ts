@@ -1,25 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-
+import { extractYouTubeId } from "@/lib/youtube";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-type Segment = { start: number; duration: number; text: string };
-const decode = (value: string) => value.replace(/&amp;/g, "&").replace(/&#39;|&apos;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-function videoId(input: string) { try { const url = new URL(input); const path = url.pathname.split("/").filter(Boolean); return (url.searchParams.get("v") || (url.hostname.includes("youtu.be") ? path[0] : ["shorts", "live", "embed"].includes(path[0]) ? path[1] : ""))?.slice(0, 11) || null; } catch { return null; } }
-async function player(id: string) { const response = await fetch(`https://www.youtube.com/youtubei/v1/player?prettyPrint=false`, { method: "POST", headers: { "content-type": "application/json", "user-agent": "com.google.android.youtube/19.29.37 (Linux; U; Android 11)", "x-youtube-client-name": "3", "x-youtube-client-version": "19.29.37" }, body: JSON.stringify({ videoId: id, context: { client: { clientName: "ANDROID", clientVersion: "19.29.37", androidSdkVersion: 30, hl: "en", gl: "US" } } }), signal: AbortSignal.timeout(15000) }); if (!response.ok) return null; return await response.json() as Record<string, unknown>; }
 async function transcribeWithGroq(file: File) {
-  if (!process.env.GROQ_API_KEY) return NextResponse.json({ status: "GROQ_NOT_CONFIGURED", error: "Hosted transcription is not configured. Add GROQ_API_KEY to .env.local, or use a video with captions." }, { status: 503 });
+  if (file.size > 4 * 1024 * 1024 || !/^(audio|video)\//.test(file.type)) return NextResponse.json({error:"Choose an audio or video file smaller than 4 MB."},{status:400});
+  if (!process.env.GROQ_API_KEY) return NextResponse.json({ status: "GROQ_NOT_CONFIGURED", error: "Hosted transcription is temporarily unavailable. Paste caption text instead." }, { status: 503 });
   const form = new FormData(); form.append("file", file, file.name); form.append("model", "whisper-large-v3-turbo"); form.append("response_format", "verbose_json");
   const response = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", { method: "POST", headers: { Authorization: `Bearer ${process.env.GROQ_API_KEY}` }, body: form, signal: AbortSignal.timeout(120000) });
   const payload = await response.json().catch(() => ({})) as { text?: string; segments?: Array<{ start?: number; end?: number; text?: string }>; error?: { message?: string } };
-  if (!response.ok) return NextResponse.json({ status: "GROQ_ERROR", error: payload.error?.message || "The transcription service could not process that file." }, { status: response.status === 429 ? 429 : 502 });
+  if (!response.ok) return NextResponse.json({ status: "GROQ_ERROR", error: "The transcription service could not process that file." }, { status: response.status === 429 ? 429 : 502 });
   const segments = (payload.segments || []).map((segment) => ({ start: Number(segment.start || 0), duration: Math.max(0, Number(segment.end || 0) - Number(segment.start || 0)), text: (segment.text || "").trim() })).filter((segment) => segment.text);
   return NextResponse.json({ status: "OK", source: "groq", language: "", segments: segments.length ? segments : [{ start: 0, duration: 0, text: payload.text || "" }] });
 }
-function parseXml(xml: string): Segment[] { return [...xml.matchAll(/<text([^>]*)>([\s\S]*?)<\/text>/g)].map((match) => { const attrs = match[1]; return { start: Number(attrs.match(/start="([^"]+)/)?.[1] || 0), duration: Number(attrs.match(/dur="([^"]+)/)?.[1] || 0), text: decode(match[2].replace(/<[^>]+>/g, "")).replace(/\s+/g, " ").trim() }; }); }
-function parseJson3(payload: { events?: Array<{ tStartMs?: number; dDurationMs?: number; segs?: Array<{ utf8?: string }> }> }): Segment[] { return (payload.events || []).filter((event) => event.segs?.length).map((event) => ({ start: (event.tStartMs || 0) / 1000, duration: (event.dDurationMs || 0) / 1000, text: event.segs?.map((segment) => segment.utf8 || "").join("").replace(/\s+/g, " ").trim() || "" })).filter((segment) => segment.text); }
-export async function POST(request: NextRequest) { if (request.headers.get("content-type")?.includes("multipart/form-data")) { const form = await request.formData(); const file = form.get("file"); if (!(file instanceof File)) return NextResponse.json({ status: "INVALID_FILE", error: "Choose an audio or video file first." }, { status: 400 }); return transcribeWithGroq(file); } const body = await request.json().catch(() => ({})) as { url?: string; language?: string }; const id = videoId(body.url || ""); if (!id) return NextResponse.json({ status: "INVALID_URL", error: "Paste a valid YouTube URL." }, { status: 400 }); try { const data = await player(id); const details = (data?.videoDetails || {}) as { title?: string; author?: string }; const tracks = (((data?.captions as Record<string, unknown> | undefined)?.playerCaptionsTracklistRenderer as Record<string, unknown> | undefined)?.captionTracks || []) as Array<{ baseUrl?: string; languageCode?: string; name?: { simpleText?: string } }>;
-  if (!tracks.length) return NextResponse.json({ status: "NO_CAPTIONS_AVAILABLE", videoMeta: { id, title: details.title || "", channel: details.author || "", thumbnail: `https://i.ytimg.com/vi/${id}/hqdefault.jpg` } });
-  const track = tracks.find((item) => item.languageCode === body.language) || tracks.find((item) => item.languageCode?.startsWith(body.language || "en")) || tracks[0]; if (!track.baseUrl) return NextResponse.json({ status: "NO_CAPTIONS_AVAILABLE", videoMeta: { id, title: details.title || "", channel: details.author || "" } });
-  const captionResponse = await fetch(`${track.baseUrl}&fmt=json3`, { signal: AbortSignal.timeout(15000) }); const raw = await captionResponse.text(); const segments = raw.trim().startsWith("{") ? parseJson3(JSON.parse(raw)) : parseXml(raw); return NextResponse.json({ status: "OK", videoId: id, title: details.title || "", channel: details.author || "", language: track.languageCode || "", availableLanguages: tracks.map((item) => ({ code: item.languageCode, label: item.name?.simpleText || item.languageCode })), segments });
-  } catch { return NextResponse.json({ status: "NO_CAPTIONS_AVAILABLE", videoMeta: { id }, error: "Captions are unavailable. You can use the local audio/video transcription mode below." }); }
+
+export async function POST(request: NextRequest) {
+  try {
+    if (request.headers.get("content-type")?.includes("multipart/form-data")) {
+      const file = (await request.formData()).get("file");
+      if (!(file instanceof File)) return NextResponse.json({error:"Choose an audio or video file."},{status:400});
+      return await transcribeWithGroq(file);
+    }
+    const body = await request.json().catch(()=>({}));
+    if (typeof body?.url !== "string" || !extractYouTubeId(body.url)) return NextResponse.json({error:"Enter a valid YouTube video link."},{status:400});
+    return NextResponse.json({status:"NO_CAPTIONS_AVAILABLE",error:"Use YouTube’s Show transcript feature, then paste permitted captions here."});
+  } catch { return NextResponse.json({error:"The transcription request could not be completed."},{status:502}); }
 }

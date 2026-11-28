@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { categories, popularTools, visibleTools } from "@/data/toolsRegistry";
+import { activeCategories as categories, popularTools, visibleTools } from "@/data/toolsRegistry";
 import { ToolCard } from "@/components/tools/ToolCard";
 
 export function HomeExplorer() {

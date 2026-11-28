@@ -36,9 +36,9 @@ function findString(value: unknown, keys: string[], depth = 0): string {
 function normalize(platform: Platform, payload: unknown): CaptionResult | null {
   const root = (payload && typeof payload === "object" ? payload : {}) as Record<string, unknown>;
   const providerError = findString(root, ["error", "errors", "status"]);
-  const caption = (findString(root, captionKeys) || findString(root, ["title"])).replace(/\r\n/g, "\n").trim();
+  const caption = findString(root, captionKeys).replace(/\r\n/g, "\n").trim();
   if (/private|login required|not found|rate.?limit|unavailable/i.test(providerError)) return null;
-  if (!caption) return null;
+  if (!caption || /^(?:error|success|ok|not found|login required)$/i.test(caption)) return null;
   const hashtags = [...new Set(caption.match(/#[\p{L}\p{N}_]+/gu) || [])];
   const mentions = [...new Set(caption.match(/@[A-Za-z0-9._-]+/g) || [])];
   const words = caption.match(/[^\s]+/g) || [];
@@ -67,10 +67,10 @@ async function fetchRapidApi(platform: Platform, source: string) {
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({})) as { url?: string };
-  const target = targetFor(body.url?.trim() || "");
+  const target = targetFor(typeof body.url === "string" ? body.url.trim() : "");
   if (!target) return NextResponse.json({ error: "Paste a public Instagram post/reel URL or Facebook post/reel URL." }, { status: 400 });
   const { result, missingKey, noCaption } = await fetchRapidApi(target.platform, target.url);
-  if (missingKey) return NextResponse.json({ error: "Caption extraction is not configured yet. Add RAPIDAPI_KEY to .env.local." }, { status: 503 });
+  if (missingKey) return NextResponse.json({ error: "Online caption extraction is temporarily unavailable. Please use the manual caption option." }, { status: 503 });
   if (noCaption) return NextResponse.json({ error: "This public post or reel does not contain a caption." }, { status: 422 });
   if (!result) return NextResponse.json({ error: "This account or post may be private, unavailable, rate-limited, or unsupported by the public metadata provider." }, { status: 404 });
   return NextResponse.json(result);
