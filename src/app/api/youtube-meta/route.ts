@@ -1,16 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
+import { apiGuard } from "@/lib/apiGuard";
 import { extractYouTubeId } from "@/lib/youtube";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 type Snippet = { title?: string; description?: string; channelTitle?: string; channelId?: string; publishedAt?: string; tags?: string[]; thumbnails?: Record<string, { url?: string }> };
 type Data = { items?: { snippet?: Snippet }[]; error?: { errors?: { reason?: string }[] } };
-const fail = (error: string, status: number) => NextResponse.json({ error }, { status });
+const fail = (error: string, status: number) => NextResponse.json({ error }, { status, headers: {"Cache-Control":"no-store"} });
 export async function GET(request: NextRequest) {
-  const id = extractYouTubeId(request.nextUrl.searchParams.get("url") || "");
+  const raw = request.nextUrl.searchParams.get("url") || "";
+  if (raw.length > 2048) return fail("Video URL is too long.", 400);
+  const id = extractYouTubeId(raw);
   if (!id) return fail("Enter a valid YouTube video link or 11-character video ID.", 400);
   const key = process.env.YOUTUBE_API_KEY;
   if (!key) return fail("Full YouTube metadata is temporarily unavailable because the service has not been configured.", 503);
+  const limited = apiGuard(request,"youtube-meta",20,60000,300); if (limited) return limited;
   const endpoint = new URL("https://www.googleapis.com/youtube/v3/videos");
   endpoint.search = new URLSearchParams({ part: "snippet", id, key }).toString();
   try {

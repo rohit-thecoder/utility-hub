@@ -1,0 +1,30 @@
+"use client";
+import dynamic from "next/dynamic";
+import type {Tool} from "@/data/toolsRegistry";
+import { textTools } from "@/lib/textToolsConfig";
+import { imageTools } from "@/lib/imageToolsConfig";
+import { fileTools } from "@/lib/fileToolsConfig";
+import { deviceTools } from "@/lib/deviceToolsConfig";
+import { networkTools } from "@/lib/networkToolsConfig";
+import { advancedTools, authorizedMediaTools } from "@/lib/advancedToolsConfig";
+const Loading=()=> <div role="status" className="surface rounded-2xl p-6 text-sm text-slate-600">Loading tool…</div>;
+const RestoredTextTool=dynamic(()=>import("@/components/tools/RestoredTextTool").then(m=>m.RestoredTextTool),{loading:Loading});
+const RestoredImageTool=dynamic(()=>import("@/components/tools/RestoredImageTool").then(m=>m.RestoredImageTool),{loading:Loading});
+const RestoredFileTool=dynamic(()=>import("@/components/tools/RestoredFileTool").then(m=>m.RestoredFileTool),{loading:Loading});
+const RestoredDeviceTool=dynamic(()=>import("@/components/tools/RestoredDeviceTool").then(m=>m.RestoredDeviceTool),{loading:Loading});
+const RestoredNetworkTool=dynamic(()=>import("@/components/tools/RestoredNetworkTool").then(m=>m.RestoredNetworkTool),{loading:Loading});
+const AdvancedBrowserTool=dynamic(()=>import("@/components/tools/AdvancedBrowserTool").then(m=>m.AdvancedBrowserTool),{loading:Loading});
+const AuthorizedMediaTool=dynamic(()=>import("@/components/tools/AuthorizedMediaTool").then(m=>m.AuthorizedMediaTool),{loading:Loading});
+const ToolWorkspace=dynamic(()=>import("@/components/tools/ToolWorkspace").then(m=>m.ToolWorkspace),{loading:Loading});
+const CreatorTool=dynamic(()=>import("@/components/tools/creator/CreatorTool").then(m=>m.CreatorTool),{loading:Loading});
+const ImageConverterTool=dynamic(()=>import("@/components/tools/image/ImageConverterTool").then(m=>m.ImageConverterTool),{loading:Loading});
+const YouTubeTranscriptTool=dynamic(()=>import("@/components/tools/creator/YouTubeTranscriptTool").then(m=>m.YouTubeTranscriptTool),{loading:Loading});
+const SocialTool=dynamic(()=>import("@/components/tools/social/SocialTool").then(m=>m.SocialTool),{loading:Loading});
+const InstagramCaptionExtractorTool=dynamic(()=>import("@/components/tools/social/InstagramCaptionExtractorTool").then(m=>m.InstagramCaptionExtractorTool),{loading:Loading});
+const FacebookCaptionExtractorTool=dynamic(()=>import("@/components/tools/social/FacebookCaptionExtractorTool").then(m=>m.FacebookCaptionExtractorTool),{loading:Loading});
+const DailyUtilitiesTool=dynamic(()=>import("@/components/tools/daily/DailyUtilitiesTool").then(m=>m.DailyUtilitiesTool),{loading:Loading});
+const dailyUtilitySlugs = new Set(["online-notepad-scratchpad", "daily-todo-checklist-maker", "spin-the-wheel-random-picker", "online-tally-counter", "typing-speed-test-wpm", "number-to-words-converter", "fuel-cost-mileage-calculator", "electricity-bill-calculator", "sleep-cycle-water-calculator", "shopping-discount-calculator", "online-meme-generator", "morse-code-binary-translator", "roman-numeral-converter", "ascii-text-banner-generator", "daily-habit-streak-tracker"]);
+export function ToolClient({tool}:{tool:Tool}){
+  const workspace = advancedTools.has(tool.slug) ? <AdvancedBrowserTool key={tool.slug} tool={tool}/> : authorizedMediaTools.has(tool.slug) ? <AuthorizedMediaTool key={tool.slug} tool={tool}/> : tool.slug in textTools ? <RestoredTextTool key={tool.slug} tool={tool}/> : tool.slug in imageTools ? <RestoredImageTool key={tool.slug} tool={tool}/> : tool.slug in fileTools ? <RestoredFileTool key={tool.slug} tool={tool}/> : tool.slug in deviceTools ? <RestoredDeviceTool key={tool.slug} tool={tool}/> : networkTools.has(tool.slug) ? <RestoredNetworkTool key={tool.slug} tool={tool}/> : dailyUtilitySlugs.has(tool.slug) ? <DailyUtilitiesTool tool={tool}/> : tool.slug === "youtube-transcript-generator" ? <YouTubeTranscriptTool/> : tool.slug === "instagram-caption-extractor" ? <InstagramCaptionExtractorTool/> : tool.slug === "facebook-caption-extractor" ? <FacebookCaptionExtractorTool/> : ["instagram-tools", "facebook-tools", "social-media-suite"].includes(tool.categorySlug) ? <SocialTool tool={tool}/> : tool.categorySlug === "creator-tools" ? <CreatorTool tool={tool}/> : tool.categorySlug === "image-converters" ? <ImageConverterTool tool={tool}/> : <ToolWorkspace tool={tool}/>;
+return workspace;
+}

@@ -12,7 +12,9 @@
     "test:restored": "tsx --test scripts/restored.test.ts",
     "prepare:advanced": "node scripts/prepare-advanced-vendors.mjs",
     "predev": "npm run prepare:advanced",
-    "prebuild": "npm run prepare:advanced"
+    "prebuild": "npm run prepare:advanced",
+    "test:production": "tsx --test scripts/production.test.ts",
+    "smoke:production": "tsx scripts/smoke-production.ts"
   },
   "dependencies": {
     "browser-image-compression": "^2.0.2",

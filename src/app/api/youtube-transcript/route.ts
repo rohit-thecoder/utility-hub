@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { apiGuard,boundedBody,boundedJson,bodyError,BodyError } from "@/lib/apiGuard";
 import { extractYouTubeId } from "@/lib/youtube";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,14 +15,16 @@ async function transcribeWithGroq(file: File) {
 }
 
 export async function POST(request: NextRequest) {
+  const limited=apiGuard(request,"transcript",3,60000,20);if(limited)return limited;
   try {
     if (request.headers.get("content-type")?.includes("multipart/form-data")) {
-      const file = (await request.formData()).get("file");
+      const bytes=await boundedBody(request,4*1024*1024+65536);
+      const file=(await new Response(bytes,{headers:{"Content-Type":request.headers.get("content-type")!}}).formData()).get("file");
       if (!(file instanceof File)) return NextResponse.json({error:"Choose an audio or video file."},{status:400});
       return await transcribeWithGroq(file);
     }
-    const body = await request.json().catch(()=>({}));
+    const body = await boundedJson(request);
     if (typeof body?.url !== "string" || !extractYouTubeId(body.url)) return NextResponse.json({error:"Enter a valid YouTube video link."},{status:400});
     return NextResponse.json({status:"NO_CAPTIONS_AVAILABLE",error:"Use YouTube’s Show transcript feature, then paste permitted captions here."});
-  } catch { return NextResponse.json({error:"The transcription request could not be completed."},{status:502}); }
+  } catch (e) { if(e instanceof BodyError)return bodyError(e);return NextResponse.json({error:"The transcription request could not be completed."},{status:502}); }
 }

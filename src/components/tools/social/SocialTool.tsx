@@ -6,7 +6,12 @@ import { siteConfig } from "@/config/site";
 import type { Tool } from "@/data/toolsRegistry";
 
 const styles = ["Bold Serif", "Cursive", "Monospace", "Small Caps", "Bubble"];
-const styleText = (value: string, style: string) => style === "Bold Serif" ? value.split("").map((char) => { const code = char.codePointAt(0) || 0; return code >= 65 && code <= 90 ? String.fromCodePoint(code + 0x1d400 - 65) : code >= 97 && code <= 122 ? String.fromCodePoint(code + 0x1d41a - 97) : char; }).join("") : style === "Monospace" ? value.split("").map((char) => { const code = char.codePointAt(0) || 0; return code >= 65 && code <= 90 ? String.fromCodePoint(code + 0x1d670 - 65) : code >= 97 && code <= 122 ? String.fromCodePoint(code + 0x1d68a - 97) : char; }).join("") : style === "Bubble" ? value.split("").map((char) => /[a-z]/i.test(char) ? `ⓘ` : char).join("") : style === "Small Caps" ? value.toUpperCase().replace(/A/g, "ᴀ").replace(/B/g, "ʙ").replace(/C/g, "ᴄ").replace(/D/g, "ᴅ").replace(/E/g, "ᴇ").replace(/G/g, "ɢ").replace(/H/g, "ʜ").replace(/I/g, "ɪ").replace(/J/g, "ᴊ").replace(/K/g, "ᴋ").replace(/L/g, "ʟ").replace(/M/g, "ᴍ").replace(/N/g, "ɴ").replace(/O/g, "ᴏ").replace(/P/g, "ᴘ").replace(/R/g, "ʀ").replace(/S/g, "s").replace(/T/g, "ᴛ").replace(/U/g, "ᴜ").replace(/V/g, "ᴠ").replace(/W/g, "ᴡ").replace(/Y/g, "ʏ").replace(/Z/g, "ᴢ") : value;
+const styleText = (value:string,style:string) => {
+  const small="ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘQʀsᴛᴜᴠᴡxʏᴢ";
+  const cursiveUpper=["𝒜","ℬ","𝒞","𝒟","ℰ","ℱ","𝒢","ℋ","ℐ","𝒥","𝒦","ℒ","ℳ","𝒩","𝒪","𝒫","𝒬","ℛ","𝒮","𝒯","𝒰","𝒱","𝒲","𝒳","𝒴","𝒵"];
+  const cursiveLower=["𝒶","𝒷","𝒸","𝒹","ℯ","𝒻","ℊ","𝒽","𝒾","𝒿","𝓀","𝓁","𝓂","𝓃","ℴ","𝓅","𝓆","𝓇","𝓈","𝓉","𝓊","𝓋","𝓌","𝓍","𝓎","𝓏"];
+  return value.replace(/[A-Za-z]/g,ch=>{const lower=ch>="a",index=ch.toLowerCase().charCodeAt(0)-97;if(style==="Small Caps")return [...small][index];if(style==="Cursive")return (lower?cursiveLower:cursiveUpper)[index];if(style==="Bubble")return String.fromCodePoint((lower?0x24d0:0x24b6)+index);return String.fromCodePoint((style==="Monospace"?(lower?0x1d68a:0x1d670):(lower?0x1d41a:0x1d400))+index);});
+};
 const hashtags = (value: string, count = 30) => [...new Set(value.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean).flatMap((word) => [`#${word}`, `#${word}tips`, `#${word}daily`, `#${word}community`, `#learn${word}`, "#reels", "#explorepage", "#contentcreator", "#trending"]))].slice(0, count);
 
 export function SocialTool({ tool }: { tool: Tool }) {

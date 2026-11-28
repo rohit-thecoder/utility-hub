@@ -1,0 +1,13 @@
+import {test} from "node:test";
+import assert from "node:assert/strict";
+import {consumeLimit,boundedJson,boundedBody,BodyError} from "../src/lib/apiGuard";
+import {generatePassword,PASSWORD_ALPHABET} from "../src/lib/securePassword";
+import {toolGuides} from "../src/data/toolGuides";
+import {allTools} from "../src/data/toolsRegistry";
+import {pdfPageSelection} from "../src/lib/advancedBrowser";
+test("request limiter blocks and resets",()=>{const key="test:"+crypto.randomUUID();assert.equal(consumeLimit(key,2,1000,100).allowed,true);assert.equal(consumeLimit(key,2,1000,200).allowed,true);assert.deepEqual(consumeLimit(key,2,1000,300),{allowed:false,retryAfter:1});assert.equal(consumeLimit(key,2,1000,1100).allowed,true);});
+test("bounded JSON accepts objects and rejects other inputs",async()=>{const request=(body:string)=>new Request("https://example.com",{method:"POST",headers:{"Content-Type":"application/json"},body});assert.deepEqual(await boundedJson(request('{"url":"example"}')),{url:"example"});await assert.rejects(boundedJson(request("null")),e=>e instanceof BodyError&&e.status===400);await assert.rejects(boundedJson(request('{"x":"long"}'),4),e=>e instanceof BodyError&&e.status===413);await assert.rejects(boundedJson(new Request("https://example.com",{method:"POST",body:"abc"})),e=>e instanceof BodyError&&e.status===415);});
+test("bounded body rejects oversized content-length",async()=>{await assert.rejects(boundedBody(new Request("https://example.com",{method:"POST",headers:{"Content-Length":"1000"},body:"x"}),5),e=>e instanceof BodyError&&e.status===413);});
+test("password output and entropy",()=>{const result=generatePassword(32);assert.equal(result.password.length,32);assert.ok([...result.password].every(c=>PASSWORD_ALPHABET.includes(c)));assert.equal(result.entropy,Math.floor(32*Math.log2(PASSWORD_ALPHABET.length)));assert.throws(()=>generatePassword(4));});
+test("all registered tools have unique practical guides",()=>{assert.equal(allTools.length,170);assert.equal(Object.keys(toolGuides).length,170);assert.equal(new Set(allTools.map(t=>t.metaDescription)).size,170);for(const tool of allTools){const guide=toolGuides[tool.slug];assert.ok(guide?.task&&guide?.example&&guide?.limit,tool.slug);assert.ok(tool.faqs.length>=4);}});
+test("PDF page selection validates bounds and deduplicates",()=>{assert.deepEqual(pdfPageSelection("3,1-2,3",5),[3,1,2]);assert.deepEqual(pdfPageSelection("",3),[1,2,3]);assert.throws(()=>pdfPageSelection("0",5));assert.throws(()=>pdfPageSelection("",31));});

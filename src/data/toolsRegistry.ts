@@ -1,3 +1,4 @@
+import {toolGuides} from "./toolGuides";
 import { siteConfig } from "@/config/site";
 
 export type ToolMode = "image" | "pdf" | "text" | "code" | "calculator" | "generator" | "media" | "file";
@@ -75,19 +76,21 @@ export const allTools: Tool[] = categories.flatMap((category) => category.tools.
   const [slug, name] = record.split("|");
   const primaryKeyword = `${name.toLowerCase()} online free`;
   const seoTitle = `${name} Online Free — QuiikTool`.slice(0, 59);
-  const metaDescription = `Use our free ${name.toLowerCase()} online with no sign-up, no watermark, and no required account. Start instantly for a fast, secure result today.`.slice(0, 160);
+  const guide=toolGuides[slug];
+  const summary=`${guide.task} ${guide.example} ${guide.limit}`;
+  const metaDescription=summary.length<=160?summary:summary.slice(0,157).replace(/\s+\S*$/,"")+"…";
   return {
-    slug, name, categorySlug: category.slug, categoryName: category.name, description: `${category.description} Use ${name} instantly with no signup and clear processing options.`, icon: category.icon, mode: modeFor(category.slug, slug),
+    slug, name, categorySlug: category.slug, categoryName: category.name, description: `${toolGuides[slug].task} ${toolGuides[slug].limit}`, icon: category.icon, mode: modeFor(category.slug, slug),
     seoTitle,
     metaDescription,
     primaryKeyword,
     secondaryKeywords: [`free ${name.toLowerCase()}`, `${name.toLowerCase()} without signup`, `private ${name.toLowerCase()}`, `fast ${name.toLowerCase()}`, `online ${name.toLowerCase()} tool`, `best ${name.toLowerCase()} online`],
     canonical: `${siteConfig.url}/tools/${slug}`,
     faqs: [
-      { question: `Is ${name} free to use?`, answer: `Yes. ${name} is free to use with no account, trial, or hidden download step.` },
-      { question: `Is ${name} private?`, answer: "Your work stays in your browser whenever the tool supports local processing. We do not require a file upload account." },
-      { question: `Can I use ${name} on mobile?`, answer: "Yes. This workspace is designed for touch-friendly use on phones, tablets, and desktops." },
-      { question: `Do I need to install software?`, answer: "No. Open the tool in a modern browser and start immediately." },
+      { question: `What does ${name} do?`, answer: guide.task },
+      { question: `What is an example of using ${name}?`, answer: guide.example },
+      { question: `What limitations should I know?`, answer: guide.limit },
+      { question: `Do I need a QuiikTool account?`, answer: "No QuiikTool registration is required. Some online integrations require provider configuration or an authorized third-party token. Browser features vary by device." },
     ],
   };
 })).map((tool) => ({ ...tool, ...(seoOverrides[tool.slug] || {}) }));

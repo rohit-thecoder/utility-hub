@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import {apiGuard,boundedJson,bodyError} from "@/lib/apiGuard";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -14,7 +16,7 @@ const authorKeys = ["author", "author_name", "username", "user_name", "owner_use
 function targetFor(raw: string): { platform: Platform; url: string } | null {
   try {
     const parsed = new URL(raw);
-    if (!/^https?:$/.test(parsed.protocol)) return null;
+    if (!/^https?:$/.test(parsed.protocol) || parsed.username || parsed.password || parsed.port) return null;
     const host = parsed.hostname.toLowerCase().replace(/^www\./, "");
     if (host === "instagram.com" && instagramPath.test(parsed.pathname)) return { platform: "instagram", url: parsed.toString() };
     if (host === "facebook.com" && parsed.pathname !== "/" && parsed.pathname.length > 1) return { platform: "facebook", url: parsed.toString() };
@@ -49,29 +51,32 @@ async function fetchRapidApi(platform: Platform, source: string) {
   const key = process.env.RAPIDAPI_KEY;
   if (!key) return { result: null, missingKey: true, noCaption: false };
   const host = platform === "instagram" ? (process.env.RAPIDAPI_INSTAGRAM_HOST || "instagram-scraper-stable-api.p.rapidapi.com") : (process.env.RAPIDAPI_FACEBOOK_HOST || "facebook-reel-and-video-downloader.p.rapidapi.com");
+  if (!/^[a-z0-9-]+\.p\.rapidapi\.com$/i.test(host)) return {result:null,missingKey:true,noCaption:false};
   const headers = { "x-rapidapi-key": key, "x-rapidapi-host": host, "content-type": "application/json" };
   const endpoints = ["/", "/scrape", "/download"];
   let providerReturnedData = false;
   for (const path of endpoints) {
     try {
-      const response = await fetch(`https://${host}${path}`, { method: "POST", headers, body: JSON.stringify({ url: source, link: source }), signal: AbortSignal.timeout(15000) });
+      const response = await fetch(`https://${host}${path}`, { method: "POST", headers, body: JSON.stringify({ url: source, link: source }), redirect:"error", signal: AbortSignal.timeout(5000) });
       if (response.ok) { providerReturnedData = true; const result = normalize(platform, await response.json()); if (result) return { result, missingKey: false, noCaption: false }; }
     } catch { /* try the provider's next compatible endpoint */ }
   }
   try {
-    const response = await fetch(`https://${host}/?url=${encodeURIComponent(source)}`, { headers: { "x-rapidapi-key": key, "x-rapidapi-host": host }, signal: AbortSignal.timeout(15000) });
+    const response = await fetch(`https://${host}/?url=${encodeURIComponent(source)}`, { headers: { "x-rapidapi-key": key, "x-rapidapi-host": host }, redirect:"error", signal: AbortSignal.timeout(5000) });
     if (response.ok) { providerReturnedData = true; const result = normalize(platform, await response.json()); return { result, missingKey: false, noCaption: !result }; }
   } catch { /* return a friendly public/private error below */ }
   return { result: null, missingKey: false, noCaption: providerReturnedData };
 }
 
 export async function POST(request: NextRequest) {
-  const body = await request.json().catch(() => ({})) as { url?: string };
+  const limited=apiGuard(request,"social-caption",8,60000,80); if(limited)return limited;
+  let body:Record<string,unknown>; try{body=await boundedJson(request);}catch(e){return bodyError(e);}
+  if(typeof body.url==="string"&&body.url.length>2048)return NextResponse.json({error:"URL too long."},{status:400});
   const target = targetFor(typeof body.url === "string" ? body.url.trim() : "");
   if (!target) return NextResponse.json({ error: "Paste a public Instagram post/reel URL or Facebook post/reel URL." }, { status: 400 });
   const { result, missingKey, noCaption } = await fetchRapidApi(target.platform, target.url);
   if (missingKey) return NextResponse.json({ error: "Online caption extraction is temporarily unavailable. Please use the manual caption option." }, { status: 503 });
   if (noCaption) return NextResponse.json({ error: "This public post or reel does not contain a caption." }, { status: 422 });
   if (!result) return NextResponse.json({ error: "This account or post may be private, unavailable, rate-limited, or unsupported by the public metadata provider." }, { status: 404 });
-  return NextResponse.json(result);
+  return NextResponse.json(result,{headers:{"Cache-Control":"no-store"}});
 }
